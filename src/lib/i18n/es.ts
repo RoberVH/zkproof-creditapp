@@ -1,0 +1,83 @@
+
+export const es = {
+  common: {
+    signIn: "Iniciar Sesión",
+    signOut: "Cerrar Sesión",
+    signUp: "Registrarse",
+    account: "Cuenta",
+    newToSystem: "¿Nuevo en el sistema?",
+    clearForm: "Limpiar Formulario",
+    selectLanguage: "Seleccionar Idioma",
+    english: "Inglés",
+    spanish: "Español",
+  },
+  header: {
+    home: "Inicio",
+    dashboard: "Panel",
+    certificates: "Certificados",
+  },
+  auth: {
+    connectWallet: "Conectar Billetera",
+    disconnectWallet: "Desconectar Billetera",
+    walletConnected: "Billetera Conectada",
+    walletAddress: "Dirección de Billetera",
+  },
+  home: {
+    title: "Demo de Aprobación de Crédito ZK Proof",
+    subtitle: "Una demostración de pruebas de conocimiento cero para aprobación de crédito",
+    description: "Este es un sitio de demostración para mostrar un generador de pruebas ZK para obtener un crédito. La prueba está codificada para que el empleado tenga que ganar MXN 20,000 o más para obtener un crédito.",
+  },
+  roles: {
+    solicitantCompany: {
+      title: "Empresa Solicitante",
+      description: "La empresa para la que trabaja el solicitante",
+    },
+    solicitant: {
+      title: "Solicitante",
+      description: "La persona que solicita el crédito",
+    },
+    creditor: {
+      title: "Acreedor",
+      description: "La empresa de crédito que evalúa solicitudes",
+    },
+  },
+  company: {
+    selectEmployee: "Seleccionar Empleado",
+    newEmployee: "Nuevo Empleado",
+    employeeName: "Nombre del Empleado",
+    employeeRFP: "RFP del Empleado",
+    wageProof: "Prueba de Salario superior a MX 20,000",
+    createEmployee: "Crear Empleado",
+    createProof: "Crear Prueba ZK",
+    wageAmount: "Monto del Salario",
+    randomSalt: "Sal Aleatoria (5 dígitos)",
+    proofsList: "Pruebas ZK Emitidas",
+    proofName: "Nombre de la Prueba",
+    proofId: "ID de la Prueba",
+    issuedDate: "Fecha de Emisión",
+  },
+  solicitant: {
+    proofsList: "Tus Pruebas ZK",
+    requestCredit: "Solicitar Crédito",
+    requestDescription: "Esto subirá tu solicitud con la prueba ZK a la blockchain",
+  },
+  creditor: {
+    requestsList: "Solicitudes de Crédito",
+    companyRFP: "RFP de la Empresa",
+    solicitantRFP: "RFP del Solicitante",
+    dateRequested: "Fecha de Solicitud",
+    proofDetails: "Detalles de la Prueba",
+    proofName: "Nombre de la Prueba",
+    proofData: "Datos de la Prueba",
+    hash: "Hash",
+    employeeRFP: "RFP del Empleado",
+    checkRequest: "Verificar Solicitud",
+    approveLoan: "Aprobar Préstamo",
+  },
+  certificates: {
+    title: "Descargar Certificados",
+    certificateName: "Nombre del Certificado",
+    companyRFP: "RFP de la Empresa",
+    download: "Descargar",
+  },
+};
