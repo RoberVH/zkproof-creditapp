@@ -2,6 +2,8 @@
 import React, { useState, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Shield, User, LogOut, ChevronDown, Globe } from "lucide-react";
+// @ts-ignore
+import MyLogo   from '@/assets/creditapplogo1.svg?react'
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { AuthContext } from "@/context/AuthContext";
@@ -34,7 +36,8 @@ const Header: React.FC = () => {
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
-              <Shield className="h-8 w-8 text-primary" />
+              {/* <Shield className="h-8 w-8 text-primary" /> */}
+              <MyLogo className="h-8 w-8 text-blue-700"  />
               <span className="font-semibold text-xl hidden sm:inline-block">ZKProof Credit</span>
             </Link>
           </div>

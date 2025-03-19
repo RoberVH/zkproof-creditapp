@@ -1,0 +1,21 @@
+<!-- LogoHexZKP.svg -->
+<svg
+  width="48"
+  height="48"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Hexágono exterior (borde) -->
+  <polygon
+    points="24,4 40,12 40,36 24,44 8,36 8,12"
+    stroke="currentColor"
+    stroke-width="3"
+    fill="none"
+  />
+  <!-- Hexágono interior (sólido) -->
+  <polygon
+    points="24,14 34,20 34,28 24,34 14,28 14,20"
+    fill="currentColor"
+  />
+</svg>

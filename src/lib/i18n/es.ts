@@ -30,15 +30,15 @@ export const es = {
   roles: {
     solicitantCompany: {
       title: "Empresa Solicitante",
-      description: "La empresa para la que trabaja el solicitante",
+      description: "La empresa de trabajo del solicitante",
     },
     solicitant: {
       title: "Solicitante",
       description: "La persona que solicita el crédito",
     },
     creditor: {
-      title: "Acreedor",
-      description: "La empresa de crédito que evalúa solicitudes",
+      title: "Financiadora",
+      description: "El Prestamista que evalúa solicitudes",
     },
   },
   company: {

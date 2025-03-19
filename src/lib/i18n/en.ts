@@ -29,11 +29,11 @@ export const en = {
   },
   roles: {
     solicitantCompany: {
-      title: "Solicitant Company",
-      description: "The company the solicitant works for",
+      title: "Applicant Company",
+      description: "The company the applicant works for",
     },
     solicitant: {
-      title: "Solicitant",
+      title: "Applicant",
       description: "The individual applying for credit",
     },
     creditor: {
@@ -64,7 +64,7 @@ export const en = {
   creditor: {
     requestsList: "Credit Requests",
     companyRFP: "Company RFP",
-    solicitantRFP: "Solicitant RFP",
+    solicitantRFP: "Applicant RFP",
     dateRequested: "Date Requested",
     proofDetails: "Proof Details",
     proofName: "Proof Name",
