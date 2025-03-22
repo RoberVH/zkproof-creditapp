@@ -10,6 +10,13 @@ export const es = {
     selectLanguage: "Seleccionar Idioma",
     english: "Inglés",
     spanish: "Español",
+    selectRole: "Selecciona tu rol",
+    selectUsername: "Selecciona tu nombre de usuario",
+    noUsersWithRole: "No hay usuarios disponibles con este rol",    
+    welcome: "Bienvenido",
+    user_exists: "Usuario ya existe",
+    user_added: "Usuario agregado",
+    noEmployees:"No hay Empleados"
   },
   header: {
     home: "Inicio",
@@ -50,11 +57,12 @@ export const es = {
     createEmployee: "Crear Empleado",
     createProof: "Crear Prueba ZK",
     wageAmount: "Monto del Salario",
-    randomSalt: "Sal Aleatoria (5 dígitos)",
+    randomSalt: "Sal Aleatoria",
     proofsList: "Pruebas ZK Emitidas",
     proofName: "Nombre de la Prueba",
     proofId: "ID de la Prueba",
     issuedDate: "Fecha de Emisión",
+     RFC: "RFC"
   },
   solicitant: {
     proofsList: "Tus Pruebas ZK",

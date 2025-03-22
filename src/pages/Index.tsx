@@ -11,6 +11,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import SignUpForm from "@/components/Auth/SignUpForm";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
+import { toast } from "sonner";
 
 const Index: React.FC = () => {
   const { isAuthenticated, user } = useContext(AuthContext);
@@ -24,8 +25,13 @@ const Index: React.FC = () => {
     setSignUpOpen(true);
   };
 
-  const handleSignUpSuccess = () => {
+  const handleSignUp = (result: {status:boolean, msg:string}) => {
     setSignUpOpen(false);
+    if (result.status)
+         toast.success(t(`common.${result.msg}`))
+        else 
+        toast.error(t(`common.${result.msg}`))
+
     navigate("/dashboard");
   };
 
@@ -149,7 +155,7 @@ const Index: React.FC = () => {
             </DialogDescription>
           </DialogHeader>
           {selectedRole && (
-            <SignUpForm role={selectedRole} onSuccess={handleSignUpSuccess} />
+            <SignUpForm role={selectedRole} onSuccess={handleSignUp} />
           )}
         </DialogContent>
       </Dialog>

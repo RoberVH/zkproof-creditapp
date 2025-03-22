@@ -11,12 +11,17 @@
 ```
 pnpm create vite@latest zkproof-creditapp -- --template react-ts
 pnpm install
-pnpm install -D tailwindcss postcss autoprefixer
+pnpm install -D postcss autoprefixer
+pnpm install -D tailwindcss@3.4.11
 pnpm install react-router-dom @tanstack/react-query
 pnpm install react-hook-form zod @hookform/resolvers
 pnpm install lodash sonner
 pnpm install -D vite-plugin-svgr
+pnpm add express
 ```
+
+Notice tailwindcss is not last version as of march 2025, it won't work 
+
 
 ### Execute dev environment
  ```

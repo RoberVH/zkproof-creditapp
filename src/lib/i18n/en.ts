@@ -10,6 +10,13 @@ export const en = {
     selectLanguage: "Select Language",
     english: "English",
     spanish: "Spanish",
+    selectRole: "Select your role",
+    selectUsername: "Select your username",
+    noUsersWithRole: "No users available with this role",    
+    welcome: "Welcome",
+    user_exists: "User already exists",
+    user_added: "User added successfully",
+    noEmployees:"No hay Empleados"
   },
   header: {
     home: "Home",
@@ -50,11 +57,12 @@ export const en = {
     createEmployee: "Create Employee",
     createProof: "Create ZK Proof",
     wageAmount: "Wage Amount",
-    randomSalt: "Random Salt (5 digits)",
+    randomSalt: "Random Salt",
     proofsList: "ZK Proofs Issued",
     proofName: "Proof Name",
     proofId: "Proof ID",
     issuedDate: "Issued Date",
+    RFC: "RFC"
   },
   solicitant: {
     proofsList: "Your ZK Proofs",

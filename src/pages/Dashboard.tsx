@@ -14,12 +14,8 @@ import { AuthContext } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
+import { existingUser, userByRole } from "@/utils/existingEntityonStorage";
 
-// Mock data for the dashboard
-const mockEmployees = [
-  { id: 1, name: "John Doe", rfp: "123456789" },
-  { id: 2, name: "Jane Smith", rfp: "987654321" },
-];
 
 const mockProofs = [
   { id: 1, name: "Wage Proof 2023-Q1", employeeId: 1, date: "2023-03-15" },
@@ -42,13 +38,23 @@ const Dashboard: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   
+  const [availableEmployees, setAvailableEmployees] = useState<string[]>([]);
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
   const [selectedProof, setSelectedProof] = useState<number | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<number | null>(null);
+  const [rfc, setRFC] = useState<string>("");
   const [newEmployeeName, setNewEmployeeName] = useState("");
   const [newEmployeeRfp, setNewEmployeeRfp] = useState("");
   const [wageAmount, setWageAmount] = useState("");
   const [salt, setSalt] = useState("");
+  
+  // Get all storage users - Applicants available at load time
+  React.useEffect(() => {
+    const availableUsers= userByRole('solicitant')
+    console.log('availableUsers',availableUsers)
+    if (availableUsers)  setAvailableEmployees(availableUsers)
+  },[])
+
   
   // Redirect to home if not authenticated
   React.useEffect(() => {
@@ -57,17 +63,12 @@ const Dashboard: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
   
-  const handleCreateEmployee = () => {
-    // Implement employee creation logic
-    toast.success("Employee created successfully");
-    setNewEmployeeName("");
-    setNewEmployeeRfp("");
-  };
   
   const handleCreateProof = () => {
     // Implement proof creation logic
-    toast.success("ZK Proof created successfully");
-    setWageAmount("");
+    //aqui creamos la prueba
+    toast.success("ZK Proof created successfully"); 
+    setWageAmount("");  
     setSalt("");
   };
   
@@ -106,73 +107,25 @@ const Dashboard: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <Select 
-              value={selectedEmployee} 
-              onValueChange={setSelectedEmployee}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={t("company.selectEmployee")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="new">{t("company.newEmployee")}</SelectItem>
-                {mockEmployees.map((employee) => (
-                  <SelectItem key={employee.id} value={employee.id.toString()}>
-                    {employee.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          { Boolean(availableEmployees.length) ? (
+              <Select 
+                value={selectedEmployee} 
+                onValueChange={setSelectedEmployee}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t("company.selectEmployee")} />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {availableEmployees.map((employee) => (
+                    <SelectItem key={employee} value={employee}>
+                      {employee}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>) : <p className="text-red-500" >{t("common.noEmployees")}</p> }
             
-            {selectedEmployee === "new" ? (
-              <div className="space-y-4 mt-4 animate-fade-in">
-                <div className="space-y-2">
-                  <Label htmlFor="employeeName">{t("company.employeeName")}</Label>
-                  <Input 
-                    id="employeeName"
-                    value={newEmployeeName}
-                    onChange={(e) => setNewEmployeeName(e.target.value)}
-                    className="input-focus-ring"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="employeeRfp">{t("company.employeeRFP")}</Label>
-                  <Input 
-                    id="employeeRfp"
-                    value={newEmployeeRfp}
-                    onChange={(e) => setNewEmployeeRfp(e.target.value)}
-                    className="input-focus-ring"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="wageProof">{t("company.wageProof")}</Label>
-                  <Input 
-                    id="wageProof" 
-                    value="ZK Wage Proof"
-                    readOnly
-                    className="bg-gray-50"
-                  />
-                </div>
-                <div className="flex space-x-2 mt-4">
-                  <Button 
-                    onClick={handleCreateEmployee}
-                    disabled={!newEmployeeName || !newEmployeeRfp}
-                    className="flex-1"
-                  >
-                    {t("company.createEmployee")}
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setNewEmployeeName("");
-                      setNewEmployeeRfp("");
-                    }}
-                    className="flex-1"
-                  >
-                    {t("common.clearForm")}
-                  </Button>
-                </div>
-              </div>
-            ) : selectedEmployee ? (
+            { selectedEmployee ? (
               <div className="space-y-4 mt-4 animate-fade-in">
                 <div className="space-y-2">
                   <Label htmlFor="wage">{t("company.wageAmount")}</Label>
@@ -184,6 +137,16 @@ const Dashboard: React.FC = () => {
                     className="input-focus-ring"
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="wage">{t("company.RFC")}</Label>
+                  <Input 
+                    id="wage"
+                    type="text"
+                    value={rfc}
+                    onChange={(e) => setRFC(e.target.value)}
+                    className="input-focus-ring"
+                  />
+                </div>                
                 <div className="space-y-2">
                   <Label htmlFor="salt">{t("company.randomSalt")}</Label>
                   <Input 
@@ -197,7 +160,7 @@ const Dashboard: React.FC = () => {
                 <div className="flex space-x-2 mt-4">
                   <Button 
                     onClick={handleCreateProof}
-                    disabled={!wageAmount || !salt}
+                    disabled={!rfc || !wageAmount || !salt}
                     className="flex-1"
                   >
                     {t("company.createProof")}
@@ -205,6 +168,7 @@ const Dashboard: React.FC = () => {
                   <Button 
                     variant="outline" 
                     onClick={() => {
+                      setRFC("");
                       setWageAmount("");
                       setSalt("");
                     }}
@@ -311,7 +275,7 @@ const Dashboard: React.FC = () => {
                 <div className="text-sm text-gray-600">
                   <p><strong>ID:</strong> #{selectedProof}</p>
                   <p><strong>Date:</strong> {mockProofs.find(p => p.id === selectedProof)?.date}</p>
-                  <p><strong>Employee:</strong> {mockEmployees.find(e => e.id === mockProofs.find(p => p.id === selectedProof)?.employeeId)?.name}</p>
+                  <p><strong>Employee:</strong> {availableEmployees.find(e => e.id === mockProofs.find(p => p.id === selectedProof)?.employeeId)?.name}</p>
                 </div>
               </div>
             </div>

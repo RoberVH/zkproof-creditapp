@@ -6,10 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AuthContext, UserRole } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
+import { addNewUser } from "@/utils/existingEntityonStorage";
+
 
 interface SignUpFormProps {
   role: UserRole;
-  onSuccess?: () => void;
+  onSuccess?: (result: {status:boolean, msg:string}) => void;
 }
 
 const SignUpForm: React.FC<SignUpFormProps> = ({ role, onSuccess }) => {
@@ -21,21 +23,17 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role, onSuccess }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim()) return;
-    
-    setLoading(true);
-    
-    // Simulate API call
-    setTimeout(async () => {
-      login(username, role);
-      
+
+    const result:{status:boolean, msg:string} = addNewUser(username,role)
+    if (result.status)  login(username, role);
       // For solicitant, connect wallet automatically
-      if (role === "solicitant") {
+      if (role === "solicitant" && result.status) {
         await connectWallet();
       }
-      
       setLoading(false);
-      if (onSuccess) onSuccess();
-    }, 1000);
+      if (onSuccess) {
+        onSuccess(result)
+      }
   };
   
   const getRoleTitle = () => {

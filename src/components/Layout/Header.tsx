@@ -1,7 +1,7 @@
 
 import React, { useState, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Shield, User, LogOut, ChevronDown, Globe } from "lucide-react";
+import {  User, LogOut, ChevronDown, Globe } from "lucide-react";
 // @ts-ignore
 import MyLogo   from '@/assets/creditapplogo1.svg?react'
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,6 @@ const Header: React.FC = () => {
   const menuItems = [
     { path: "/", label: t("header.home") },
     { path: "/dashboard", label: t("header.dashboard") },
-    { path: "/certificates", label: t("header.certificates") },
   ];
 
   const toggleMobileMenu = () => {
@@ -123,7 +122,7 @@ const Header: React.FC = () => {
                         ? t("roles.solicitant.title") 
                         : t("roles.creditor.title")})
                   </DropdownMenuItem>
-                  <DropdownMenuItem>{t("common.account")}</DropdownMenuItem>
+                  {/* <DropdownMenuItem>{t("common.account")}</DropdownMenuItem> */}
                   <DropdownMenuItem onClick={logout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     {t("common.signOut")}
