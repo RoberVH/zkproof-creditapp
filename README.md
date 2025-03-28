@@ -17,7 +17,8 @@ pnpm install react-router-dom @tanstack/react-query
 pnpm install react-hook-form zod @hookform/resolvers
 pnpm install lodash sonner
 pnpm install -D vite-plugin-svgr
-pnpm add express
+pnpm install  ethers
+
 ```
 
 Notice tailwindcss is not last version as of march 2025, it won't work 

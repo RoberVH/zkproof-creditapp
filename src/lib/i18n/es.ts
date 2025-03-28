@@ -16,7 +16,9 @@ export const es = {
     welcome: "Bienvenido",
     user_exists: "Usuario ya existe",
     user_added: "Usuario agregado",
-    noEmployees:"No hay Empleados"
+    noEmployees:"No hay Empleados",
+    ZKProof_ok:"Prueba ZK Válida",
+    ZKProof_error:"¡Prueba ZK inválida!"
   },
   header: {
     home: "Inicio",
@@ -59,15 +61,17 @@ export const es = {
     wageAmount: "Monto del Salario",
     randomSalt: "Sal Aleatoria",
     proofsList: "Pruebas ZK Emitidas",
-    proofName: "Nombre de la Prueba",
+    proofData: "Prueba",
     proofId: "ID de la Prueba",
     issuedDate: "Fecha de Emisión",
-     RFC: "RFC"
+     RFC: "RFC",
+     proofName: "Datos de Prueba",
   },
   solicitant: {
     proofsList: "Tus Pruebas ZK",
-    requestCredit: "Solicitar Crédito",
+    requestCredit: "Verificar Prueba",
     requestDescription: "Esto subirá tu solicitud con la prueba ZK a la blockchain",
+    proofName: "Datos de Prueba",
   },
   creditor: {
     requestsList: "Solicitudes de Crédito",
@@ -75,7 +79,7 @@ export const es = {
     solicitantRFP: "RFP del Solicitante",
     dateRequested: "Fecha de Solicitud",
     proofDetails: "Detalles de la Prueba",
-    proofName: "Nombre de la Prueba",
+    proofName: "Datos de Prueba",
     proofData: "Datos de la Prueba",
     hash: "Hash",
     employeeRFP: "RFP del Empleado",

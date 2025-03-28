@@ -1,5 +1,5 @@
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,12 +9,27 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
-import { CheckCircle, AlertCircle } from "lucide-react";
+import { CheckCircle, AlertCircle, PowerOff } from "lucide-react";
 import { AuthContext } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
-import { existingUser, userByRole } from "@/utils/existingEntityonStorage";
+import { existingUser, userByRole } from "@/lib/existingEntityonStorage";
+
+import { createZKProof } from "@/components/zkproofs/createZKproof";
+import { write } from "fs";
+import { storeProof } from "@/lib/writeProofStorage";
+import { resourceLimits } from "worker_threads";
+import { convertUnixDate, getEmployeeProofs } from "@/lib/utils";
+import { StoredProofRecord } from "@/lib/app-types";
+import { verify } from "crypto";
+import { verifyProof } from "@/utils/ethereum";
+import { Toaster } from "@/components/ui/toaster";
+import { Toast } from "@radix-ui/react-toast";
+
+
+
+
 
 
 const mockProofs = [
@@ -39,21 +54,35 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   
   const [availableEmployees, setAvailableEmployees] = useState<string[]>([]);
+  const [availableProofs, setAvailableProofs] = useState<StoredProofRecord[]>([]);
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
   const [selectedProof, setSelectedProof] = useState<number | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<number | null>(null);
   const [rfc, setRFC] = useState<string>("");
-  const [newEmployeeName, setNewEmployeeName] = useState("");
-  const [newEmployeeRfp, setNewEmployeeRfp] = useState("");
   const [wageAmount, setWageAmount] = useState("");
   const [salt, setSalt] = useState("");
+
   
+  // const [newEmployeeName, setNewEmployeeName] = useState("");
+  // const [newEmployeeRfp, setNewEmployeeRfp] = useState("");
+
   // Get all storage users - Applicants available at load time
   React.useEffect(() => {
     const availableUsers= userByRole('solicitant')
-    console.log('availableUsers',availableUsers)
     if (availableUsers)  setAvailableEmployees(availableUsers)
   },[])
+
+  // Get all proofs for current Employee
+  React.useEffect(() => {
+    let employeeProofs: any
+      if (user){
+      if (user.role === 'solicitant-company') 
+            employeeProofs= getEmployeeProofs(selectedEmployee)
+      else
+            employeeProofs= getEmployeeProofs(user.username)
+      setAvailableProofs(employeeProofs)
+  }
+  },[selectedEmployee])
 
   
   // Redirect to home if not authenticated
@@ -64,27 +93,29 @@ const Dashboard: React.FC = () => {
   }, [isAuthenticated, navigate]);
   
   
-  const handleCreateProof = () => {
+  const handleCreateProof = async () => {
     // Implement proof creation logic
-    //aqui creamos la prueba
-    toast.success("ZK Proof created successfully"); 
-    setWageAmount("");  
-    setSalt("");
-  };
-  
-  const handleRequestCredit = () => {
-    if (!walletConnected) {
-      connectWallet().then((success) => {
-        if (success) {
-          toast.success("Credit requested successfully");
-        } else {
-          toast.error("Failed to connect wallet");
-        }
-      });
-    } else {
-      // Implement credit request logic
-      toast.success("Credit requested successfully");
+    try {
+      const result = await createZKProof({ wageAmount, salt, rfc})
+      if (!result.status) throw new Error(result.msg)
+      // store it on browser
+      const resultStore= storeProof(selectedEmployee, result.proofData)
+
+      if (!result.status) toast.error(resultStore.msg)
+       toast.success("ZK Proof created successfully"); 
+      // refresh availableProofs
+      setAvailableProofs(getEmployeeProofs(selectedEmployee))
+    } catch (error) {
+      console.error('Error creating zkpProof from server:', error);
+      toast.error(error.message);
     }
+  };
+
+  
+  const handleVerify = async () => {
+    const result = await verifyProof(availableProofs[selectedProof-1].proof)
+    if (result.status ) toast.success(t(result.msg))
+        else toast.error(t(result.msg))
   };
   
   const handleCheckRequest = () => {
@@ -93,7 +124,16 @@ const Dashboard: React.FC = () => {
       toast.success("Verification passed successfully");
     }, 1000);
   };
-  
+
+  const handleChangeEmployee = (e: React.SetStateAction<string>) => {
+    setSelectedEmployee(e)
+  }
+
+  const handleVerification = (proof: StoredProofRecord) => {
+      // here call verifier
+  }
+
+
   const handleApproveLoan = () => {
     // Implement loan approval logic
     toast.success("Loan approved successfully");
@@ -110,7 +150,7 @@ const Dashboard: React.FC = () => {
           { Boolean(availableEmployees.length) ? (
               <Select 
                 value={selectedEmployee} 
-                onValueChange={setSelectedEmployee}
+                onValueChange={handleChangeEmployee}
               >
                 <SelectTrigger>
                   <SelectValue placeholder={t("company.selectEmployee")} />
@@ -140,7 +180,7 @@ const Dashboard: React.FC = () => {
                 <div className="space-y-2">
                   <Label htmlFor="wage">{t("company.RFC")}</Label>
                   <Input 
-                    id="wage"
+                    id="rfc"
                     type="text"
                     value={rfc}
                     onChange={(e) => setRFC(e.target.value)}
@@ -152,6 +192,7 @@ const Dashboard: React.FC = () => {
                   <Input 
                     id="salt"
                     placeholder="12345"
+                    type="number"
                     value={salt}
                     onChange={(e) => setSalt(e.target.value)}
                     className="input-focus-ring"
@@ -192,19 +233,16 @@ const Dashboard: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t("company.proofName")}</TableHead>
-                  <TableHead>{t("company.proofId")}</TableHead>
                   <TableHead>{t("company.issuedDate")}</TableHead>
+                  <TableHead>{t("company.proofData")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockProofs
-                  .filter((proof) => proof.employeeId === parseInt(selectedEmployee))
+                {availableProofs
                   .map((proof) => (
                     <TableRow key={proof.id}>
-                      <TableCell>{proof.name}</TableCell>
-                      <TableCell>#{proof.id}</TableCell>
-                      <TableCell>{proof.date}</TableCell>
+                      <TableCell>{convertUnixDate(proof.createdAt)}</TableCell>
+                      <TableCell  className="truncate">{proof.proof}</TableCell>
                     </TableRow>
                   ))}
               </TableBody>
@@ -222,23 +260,22 @@ const Dashboard: React.FC = () => {
           <CardTitle>{t("solicitant.proofsList")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
+          <Table className="">
             <TableHeader>
               <TableRow>
-                <TableHead>{t("company.proofName")}</TableHead>
+                <TableHead></TableHead>
                 <TableHead>{t("company.issuedDate")}</TableHead>
+                <TableHead >{t("company.proofName")}</TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockProofs.map((proof) => (
+              {availableProofs.map((proof) => (
                 <TableRow 
                   key={proof.id} 
                   className={selectedProof === proof.id ? "bg-blue-50" : ""}
                   onClick={() => setSelectedProof(proof.id)}
                 >
-                  <TableCell>{proof.name}</TableCell>
-                  <TableCell>{proof.date}</TableCell>
                   <TableCell>
                     <Button
                       size="sm"
@@ -248,6 +285,8 @@ const Dashboard: React.FC = () => {
                       Select
                     </Button>
                   </TableCell>
+                  <TableCell>{convertUnixDate(proof.createdAt)}</TableCell>
+                  <TableCell className="truncate">{proof.proof}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -273,15 +312,15 @@ const Dashboard: React.FC = () => {
                   </span>
                 </div>
                 <div className="text-sm text-gray-600">
-                  <p><strong>ID:</strong> #{selectedProof}</p>
-                  <p><strong>Date:</strong> {mockProofs.find(p => p.id === selectedProof)?.date}</p>
-                  <p><strong>Employee:</strong> {availableEmployees.find(e => e.id === mockProofs.find(p => p.id === selectedProof)?.employeeId)?.name}</p>
+                  <p><strong>ID:</strong> #{availableProofs[selectedProof-1].id}</p>
+                  <p><strong>Date:</strong> {convertUnixDate(availableProofs[selectedProof-1].createdAt)}</p>
+                  <p className="truncate"><strong>Proof Data:</strong> {availableProofs[selectedProof-1].proof}</p>
                 </div>
               </div>
             </div>
           </CardContent>
           <CardFooter className="flex justify-end">
-            <Button onClick={handleRequestCredit}>
+            <Button onClick={handleVerify}>
               {t("solicitant.requestCredit")}
             </Button>
           </CardFooter>
@@ -403,7 +442,9 @@ const Dashboard: React.FC = () => {
                 ? t("roles.solicitantCompany.title") 
                 : user?.role === "solicitant" 
                   ? t("roles.solicitant.title") 
-                  : t("roles.creditor.title")} {t("header.dashboard")}
+                  : t("roles.creditor.title")
+               }
+               {t("header.dashboard")}
             </h1>
             <p className="text-gray-600">
               {user?.username}

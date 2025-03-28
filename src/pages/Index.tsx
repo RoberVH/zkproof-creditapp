@@ -56,6 +56,14 @@ const Index: React.FC = () => {
     },
   ];
 
+  const checa  = async () => {
+    const respuesta = await fetch('http://localhost:3000/ping')
+    console.log('respuesta',respuesta)
+    const result = await respuesta.text()
+    console.log('respuesta',result)
+    alert(result)
+  };
+  
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -64,7 +72,7 @@ const Index: React.FC = () => {
         <section className="py-20 px-4">
           <div className="container-content">
             <div className="text-center mb-16 max-w-3xl mx-auto">
-              <Badge className="mb-4 py-1 px-3 bg-blue-100 text-blue-800 border-blue-200">
+              <Badge className="mb-4 py-1 px-3 bg-blue-100 text-blue-800 border-blue-200" onClick={checa}>
                 Demo
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AuthContext, UserRole } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
-import { addNewUser } from "@/utils/existingEntityonStorage";
+import { addNewUser } from "@/lib/existingEntityonStorage";
 
 
 interface SignUpFormProps {
