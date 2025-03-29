@@ -13,7 +13,7 @@ import { formatWalletAddress } from "@/utils/ethereum";
 import SignInButton from "@/components/Auth/SignInButton";
 
 const Header: React.FC = () => {
-  const { user, isAuthenticated, logout, walletConnected, walletAddress, connectWallet, disconnectWallet } = useContext(AuthContext);
+  const { user, isAuthenticated, logout, walletConnected, walletAddress, connectWallet, disconnectWallet, hasWallet } = useContext(AuthContext);
   const { language, setLanguage } = useContext(LanguageContext);
   const { t } = useTranslation();
   const location = useLocation();
@@ -82,7 +82,7 @@ const Header: React.FC = () => {
             </DropdownMenu>
 
             {/* Wallet Connect/Disconnect */}
-            {(isAuthenticated && user?.role === "solicitant") && (
+            {(hasWallet && isAuthenticated && user?.role === "solicitant") && (
               <div>
                 {walletConnected ? (
                   <DropdownMenu>

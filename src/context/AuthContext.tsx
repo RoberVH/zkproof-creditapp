@@ -1,4 +1,5 @@
 
+import { isEthereumAvailable } from "@/utils/ethereum";
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 
 export type UserRole = "solicitant-company" | "solicitant" | "creditor" | null;
@@ -10,6 +11,7 @@ interface AuthUser {
 }
 
 interface AuthContextType {
+  hasWallet: boolean;
   user: AuthUser | null;
   isAuthenticated: boolean;
   walletConnected: boolean;
@@ -22,6 +24,7 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
+  hasWallet: false,
   isAuthenticated: false,
   walletConnected: false,
   walletAddress: null,
@@ -39,9 +42,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [walletConnected, setWalletConnected] = useState<boolean>(false);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [hasWallet, setHasWallet] = useState<boolean> (false);
+  
 
   // Check for saved session on mount
   useEffect(() => {
+
+    setHasWallet(isEthereumAvailable)
+
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       setUser(JSON.parse(savedUser));
@@ -134,6 +142,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
+        hasWallet,
         user,
         isAuthenticated: !!user,
         walletConnected,

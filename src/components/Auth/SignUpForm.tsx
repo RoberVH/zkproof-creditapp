@@ -17,7 +17,7 @@ interface SignUpFormProps {
 const SignUpForm: React.FC<SignUpFormProps> = ({ role, onSuccess }) => {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login, connectWallet } = useContext(AuthContext);
+  const { hasWallet, login, connectWallet } = useContext(AuthContext);
   const { t } = useTranslation();
   
   const handleSubmit = async (e: React.FormEvent) => {

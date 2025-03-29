@@ -31,3 +31,7 @@ export function convertUnixDate(unixDate: number): string {
   const date = new Date(unixDate * 1000)
   return date.toLocaleString()
 }
+
+export function copyClipboard(text: string): void {
+  navigator.clipboard.writeText(text)
+}

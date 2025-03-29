@@ -1,5 +1,5 @@
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext,  useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,39 +14,14 @@ import { AuthContext } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
-import { existingUser, userByRole } from "@/lib/existingEntityonStorage";
+import {  userByRole } from "@/lib/existingEntityonStorage";
 
 import { createZKProof } from "@/components/zkproofs/createZKproof";
-import { write } from "fs";
 import { storeProof } from "@/lib/writeProofStorage";
-import { resourceLimits } from "worker_threads";
-import { convertUnixDate, getEmployeeProofs } from "@/lib/utils";
+import { convertUnixDate, copyClipboard, getEmployeeProofs } from "@/lib/utils";
 import { StoredProofRecord } from "@/lib/app-types";
-import { verify } from "crypto";
 import { verifyProof } from "@/utils/ethereum";
-import { Toaster } from "@/components/ui/toaster";
-import { Toast } from "@radix-ui/react-toast";
 
-
-
-
-
-
-const mockProofs = [
-  { id: 1, name: "Wage Proof 2023-Q1", employeeId: 1, date: "2023-03-15" },
-  { id: 2, name: "Wage Proof 2023-Q2", employeeId: 1, date: "2023-06-15" },
-  { id: 3, name: "Wage Proof 2023-Q3", employeeId: 2, date: "2023-09-15" },
-];
-
-const mockCreditRequests = [
-  { id: 1, companyRfp: "123456789", solicitantRfp: "111222333", date: "2023-10-01", proofId: 1 },
-  { id: 2, companyRfp: "987654321", solicitantRfp: "444555666", date: "2023-10-15", proofId: 3 },
-];
-
-const mockProofDetails = {
-  1: { hash: "0x1234...5678", employeeRfp: "123456789" },
-  3: { hash: "0x8765...4321", employeeRfp: "987654321" },
-};
 
 const Dashboard: React.FC = () => {
   const { user, isAuthenticated, walletConnected, connectWallet } = useContext(AuthContext);
@@ -57,14 +32,9 @@ const Dashboard: React.FC = () => {
   const [availableProofs, setAvailableProofs] = useState<StoredProofRecord[]>([]);
   const [selectedEmployee, setSelectedEmployee] = useState<string>("");
   const [selectedProof, setSelectedProof] = useState<number | null>(null);
-  const [selectedRequest, setSelectedRequest] = useState<number | null>(null);
   const [rfc, setRFC] = useState<string>("");
   const [wageAmount, setWageAmount] = useState("");
   const [salt, setSalt] = useState("");
-
-  
-  // const [newEmployeeName, setNewEmployeeName] = useState("");
-  // const [newEmployeeRfp, setNewEmployeeRfp] = useState("");
 
   // Get all storage users - Applicants available at load time
   React.useEffect(() => {
@@ -92,7 +62,11 @@ const Dashboard: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
   
-  
+  const copyProofData = (text: string) => {
+    copyClipboard(text)
+    toast.info(t("common.proofCopied"))
+  }
+
   const handleCreateProof = async () => {
     // Implement proof creation logic
     try {
@@ -102,7 +76,7 @@ const Dashboard: React.FC = () => {
       const resultStore= storeProof(selectedEmployee, result.proofData)
 
       if (!result.status) toast.error(resultStore.msg)
-       toast.success("ZK Proof created successfully"); 
+       toast.success(t("solicitant.ProofCreatedSuccessfully"))
       // refresh availableProofs
       setAvailableProofs(getEmployeeProofs(selectedEmployee))
     } catch (error) {
@@ -118,26 +92,12 @@ const Dashboard: React.FC = () => {
         else toast.error(t(result.msg))
   };
   
-  const handleCheckRequest = () => {
-    // Implement verification logic
-    setTimeout(() => {
-      toast.success("Verification passed successfully");
-    }, 1000);
-  };
 
   const handleChangeEmployee = (e: React.SetStateAction<string>) => {
     setSelectedEmployee(e)
   }
 
-  const handleVerification = (proof: StoredProofRecord) => {
-      // here call verifier
-  }
 
-
-  const handleApproveLoan = () => {
-    // Implement loan approval logic
-    toast.success("Loan approved successfully");
-  };
   
   const renderSolicitantCompanyDashboard = () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -297,7 +257,7 @@ const Dashboard: React.FC = () => {
       {selectedProof && (
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle>Request Credit</CardTitle>
+            <CardTitle>{t("solicitant.requestCredit")}</CardTitle>
             <CardDescription>
               {t("solicitant.requestDescription")}
             </CardDescription>
@@ -307,14 +267,22 @@ const Dashboard: React.FC = () => {
               <div className="p-4 border rounded-md bg-blue-50">
                 <div className="flex items-center mb-2">
                   <Badge className="mr-2">Proof</Badge>
-                  <span className="font-medium">
-                    {mockProofs.find(p => p.id === selectedProof)?.name}
-                  </span>
+
                 </div>
                 <div className="text-sm text-gray-600">
                   <p><strong>ID:</strong> #{availableProofs[selectedProof-1].id}</p>
                   <p><strong>Date:</strong> {convertUnixDate(availableProofs[selectedProof-1].createdAt)}</p>
-                  <p className="truncate"><strong>Proof Data:</strong> {availableProofs[selectedProof-1].proof}</p>
+                  <p className="truncate"><strong>Proof Data:</strong> </p>
+                  <textarea 
+                    name='dataproof' 
+                    key={selectedProof}
+                    className="p-1 cursor-pointer" 
+                    onClick={()=> copyProofData(JSON.stringify(availableProofs[selectedProof-1].proof))} 
+                    title={'Proof Data'}  
+                    rows={8} 
+                    cols={70} 
+                    defaultValue={availableProofs[selectedProof-1].proof}>
+                  </textarea>
                 </div>
               </div>
             </div>
@@ -329,87 +297,6 @@ const Dashboard: React.FC = () => {
     </div>
   );
   
-  const renderCreditorDashboard = () => (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle>{t("creditor.requestsList")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t("creditor.companyRFP")}</TableHead>
-                <TableHead>{t("creditor.solicitantRFP")}</TableHead>
-                <TableHead>{t("creditor.dateRequested")}</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {mockCreditRequests.map((request) => (
-                <TableRow 
-                  key={request.id} 
-                  className={selectedRequest === request.id ? "bg-blue-50" : ""}
-                  onClick={() => setSelectedRequest(request.id)}
-                >
-                  <TableCell>{request.companyRfp}</TableCell>
-                  <TableCell>{request.solicitantRfp}</TableCell>
-                  <TableCell>{request.date}</TableCell>
-                  <TableCell>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setSelectedRequest(request.id)}
-                    >
-                      Select
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-      
-      {selectedRequest && (
-        <Card className="glass-card">
-          <CardHeader>
-            <CardTitle>{t("creditor.proofDetails")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="p-4 border rounded-md bg-blue-50">
-                <div className="flex items-center mb-2">
-                  <Badge className="mr-2">Proof</Badge>
-                  <span className="font-medium">
-                    {mockProofs.find(p => p.id === mockCreditRequests.find(r => r.id === selectedRequest)?.proofId)?.name}
-                  </span>
-                </div>
-                <div className="text-sm text-gray-600 space-y-2">
-                  <p><strong>{t("creditor.hash")}:</strong> {mockProofDetails[mockCreditRequests.find(r => r.id === selectedRequest)?.proofId || 0]?.hash}</p>
-                  <p><strong>{t("creditor.employeeRFP")}:</strong> {mockProofDetails[mockCreditRequests.find(r => r.id === selectedRequest)?.proofId || 0]?.employeeRfp}</p>
-                </div>
-              </div>
-              
-              <div className="hidden">
-                {/* Hidden fields with proof.json and public.json */}
-                <Input value='{"proof": "0x1234...5678"}' readOnly />
-                <Input value='{"public": "0x8765...4321"}' readOnly />
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={handleCheckRequest}>
-              {t("creditor.checkRequest")}
-            </Button>
-            <Button onClick={handleApproveLoan}>
-              {t("creditor.approveLoan")}
-            </Button>
-          </CardFooter>
-        </Card>
-      )}
-    </div>
-  );
   
   const renderDashboardContent = () => {
     if (!user?.role) return null;
@@ -419,8 +306,6 @@ const Dashboard: React.FC = () => {
         return renderSolicitantCompanyDashboard();
       case "solicitant":
         return renderSolicitantDashboard();
-      case "creditor":
-        return renderCreditorDashboard();
       default:
         return null;
     }

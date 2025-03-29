@@ -62,12 +62,7 @@ const SignInButton: React.FC = () => {
       value: "solicitant",
       label: t("roles.solicitant.title"),
       icon: <User className="h-4 w-4 mr-2" />,
-    },
-    {
-      value: "creditor",
-      label: t("roles.creditor.title"),
-      icon: <CreditCard className="h-4 w-4 mr-2" />,
-    },
+    }
   ];
 
   return (

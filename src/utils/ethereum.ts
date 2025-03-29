@@ -4,6 +4,32 @@ import GROTH16_VERIFIER_ABI from "./Groth16VerifierABI.json"
 // Verifier Contract deployed to SEPOLIA
 const VERIFIER_CONTRACT_ADDRESS='0xAd0fB84F188DF7Bb7A889FFC734739f34bBA2a14'
 
+ const ChainId= "0xaa36a7"
+ const ChainName= "Sepolia"
+ const rpcUrl="https://sepolia.infura.io"
+ const currency = "ETH"
+ const symbol = "ETH"
+
+ // FOR TESTING
+// const ChainId= "0xa86a"
+// const ChainName= "Avalanche C-Chain"
+// const rpcUrl="https://avalanche.drpc.org"
+// const currency = "AVAX"
+// const symbol = "AVAX"
+
+// Types for Ethereum window
+declare global {
+  interface Window {
+    ethereum?: {
+      isMetaMask?: boolean;
+      request: (request: { method: string; params?: any[] }) => Promise<any>;
+      on: (eventName: string, callback: (...args: any[]) => void) => void;
+      removeListener: (eventName: string, callback: (...args: any[]) => void) => void;
+      removeAllListeners: (eventName: string) => void;
+    };
+  }
+}
+
 // Detect if MetaMask or another Ethereum wallet is installed
 export const isEthereumAvailable = (): boolean => {
   return typeof window !== "undefined" && !!window.ethereum;
@@ -15,48 +41,35 @@ export const formatWalletAddress = (address: string | null): string => {
   return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
 };
 
-// Helper function to check if a connected network is supported
-export const checkSupportedNetwork = async (): Promise<boolean> => {
-  if (!window.ethereum) return false;
-  
-  try {
-    const chainId = await window.ethereum.request({ method: "eth_chainId" });
-    // Add your supported chain IDs here
-    const supportedChains = ["0xaa36a7"]; // Sepolia
-    return supportedChains.includes(chainId);
-  } catch (error) {
-    console.error("Error checking network:", error);
-    return false;
-  }
-};
 
 // Helper to switch networks
 export const switchToSupportedNetwork = async (): Promise<boolean> => {
   if (!window.ethereum) return false;
   
   try {
-    // Request switch to Goerli testnet
+    // Request switch to Sepolia testnet
     await window.ethereum.request({
       method: "wallet_switchEthereumChain",
-      params: [{ chainId: "0xaa36a7" }], // Sepolia
+      params: [{ chainId: ChainId }], // Sepolia
     });
     return true;
   } catch (error: any) {
     // This error code means the chain has not been added to MetaMask
     if (error.code === 4902) {
       try {
+        // try to add it to wallet
         await window.ethereum.request({
           method: "wallet_addEthereumChain",
           params: [
             {
-              chainId: "0xaa36a7",
-              chainName: "Sepolia",
+              chainId: ChainId,
+              chainName: ChainName,
               nativeCurrency: {
-                name: "ETH",
-                symbol: "ETH",
+                name: currency,
+                symbol: symbol,
                 decimals: 18,
               },
-              rpcUrls: ["https://sepolia.infura.io"],
+              rpcUrls: [rpcUrl],
               blockExplorerUrls: ["https://sepolia.etherscan.io"],
             },
           ],
@@ -66,9 +79,8 @@ export const switchToSupportedNetwork = async (): Promise<boolean> => {
         console.error("Error adding network:", addError);
         return false;
       }
-    }
-    console.error("Error switching network:", error);
-    return false;
+    } 
+    return false
   }
 };
 
@@ -86,10 +98,10 @@ export const verifyProof = async (proof:string[]): Promise<{status: boolean, msg
     callData[3][1],
     callData[3][2]
   ]
-  //_pC[1]='0x06fafffdd070f264d66d2ec354b82565d070f2ec354b8d070f264d2565d070f2ec35'
     try {
       let isValid: Boolean
       if (typeof window === "undefined" || !window.ethereum) {
+        //no wallet, verify through server
         const result = await fetch("http://localhost:3000/verifyproof", {
           method: "POST",
           headers: {
@@ -108,6 +120,16 @@ export const verifyProof = async (proof:string[]): Promise<{status: boolean, msg
 
       }
       } else {
+        // there is a wallet, check all ok
+        // installed, check if Seploua  is  current network
+        const chainId = await window.ethereum.request({ method: "eth_chainId" })
+        if (chainId !== ChainId.toLowerCase()) {
+            // it's not  Sepolia try switching
+            if (! await switchToSupportedNetwork()) {
+              return {status: false, msg: 'common.notTestnet'}
+            }
+          }        
+        //alright, proced 
         const provider = new ethers.BrowserProvider(window.ethereum)
         // No need for a signer, get a provider for read only from contract
         const verifierContract =  new ethers.Contract(VERIFIER_CONTRACT_ADDRESS, GROTH16_VERIFIER_ABI, provider)
@@ -124,15 +146,4 @@ export const verifyProof = async (proof:string[]): Promise<{status: boolean, msg
   }
 }
 
-// Types for Ethereum window
-declare global {
-  interface Window {
-    ethereum?: {
-      isMetaMask?: boolean;
-      request: (request: { method: string; params?: any[] }) => Promise<any>;
-      on: (eventName: string, callback: (...args: any[]) => void) => void;
-      removeListener: (eventName: string, callback: (...args: any[]) => void) => void;
-      removeAllListeners: (eventName: string) => void;
-    };
-  }
-}
+

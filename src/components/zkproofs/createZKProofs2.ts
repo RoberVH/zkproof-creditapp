@@ -15,8 +15,8 @@ type publicSignals = string[]
 interface returnValuesZKProof {
     status: boolean;
     msg?: string;
-    proof: proof;
-    publicSignals: publicSignals;
+    proof?: proof;
+    publicSignals?: publicSignals;
 }
 
 const createZKProof = async (inputData: InputDataProps): Promise<returnValuesZKProof> => {
@@ -39,13 +39,7 @@ const createZKProof = async (inputData: InputDataProps): Promise<returnValuesZKP
             const errorData = await response.json();
             throw new Error(errorData.msg || 'Failed to hash RFC');
         }
-
         const data = await response.json();
-
-        console.log('data.hash', data);
-        //toast.success("ZK Proof created successfully");
-        //setWageAmount("");
-        //setSalt("");
         return {
             status: true,
             proof: data.proof,
@@ -57,8 +51,6 @@ const createZKProof = async (inputData: InputDataProps): Promise<returnValuesZKP
         return {
             status: false,
             msg: error.message,
-            proof: {},
-            publicSignals: []
         };
     }
 };

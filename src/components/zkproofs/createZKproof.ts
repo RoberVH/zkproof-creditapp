@@ -37,7 +37,6 @@ const createZKProof = async (inputData: InputDataProps): Promise<returnValuesZKP
         }
     
         const data = await response.json();
-        console.log('data en creator',data)
         // all good
         return {
             status: true,

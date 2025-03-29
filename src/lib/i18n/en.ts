@@ -18,7 +18,9 @@ export const en = {
     user_added: "User added successfully",
     noEmployees:"No Employees",
     ZKProof_ok:"Valid ZK Proof",
-    ZKProof_error:"Invalid ZK Proof!"
+    ZKProof_error:"Invalid ZK Proof!",
+    proofCopied:"Proof Data copied to Clipboard",
+    notTestnet:"No Testenet Sepolia connection"
   },
   header: {
     home: "Home",
@@ -34,7 +36,7 @@ export const en = {
   home: {
     title: "ZK Proof Credit Approval Demo",
     subtitle: "A demonstration of zero-knowledge proofs for credit approval",
-    description: "This is a demo site to showcase a ZK proof generator to get a credit. The proof is hardcoded so to get a credit the employee has to make MXN 20,000 or higher.",
+    description: "This is a demo site to showcase a ZK proof generator to get a credit. The proof is hardcoded so to get a credit the employee has to make MXN 28,000 or higher.",
   },
   roles: {
     solicitantCompany: {
@@ -44,6 +46,11 @@ export const en = {
     solicitant: {
       title: "Applicant",
       description: "The individual applying for credit",
+      proofsList: "Your ZK Proofs",
+      requestCredit: "Verify Proof",
+      requestDescription: "Your ZK Proof will be verified by a contract in the Blockchain (Sepolia)",
+      proofName: "Proof Data",
+      proofValidationTitle: "Verify Proof",
     },
     creditor: {
       title: "Creditor",
@@ -70,8 +77,10 @@ export const en = {
   solicitant: {
     proofsList: "Your ZK Proofs",
     requestCredit: "Verify Proof",
-    requestDescription: "This will upload your request with the ZK proof to the blockchain",
+    requestDescription: "Your ZK Proof will be verified by a contract in the Blockchain (Sepolia)",
     proofName: "Proof Data",
+    proofValidationTitle: "Proof Validation",
+    ProofCreatedSuccessfully:"ZK Proof created Succesfully"
   },
   creditor: {
     requestsList: "Credit Requests",

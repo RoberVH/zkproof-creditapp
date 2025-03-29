@@ -1,5 +1,5 @@
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,23 +47,17 @@ const Index: React.FC = () => {
       description: t("roles.solicitant.description"),
       icon: <User className="h-10 w-10 text-primary" />,
       role: "solicitant" as UserRole,
-    },
-    {
-      title: t("roles.creditor.title"),
-      description: t("roles.creditor.description"),
-      icon: <CreditCard className="h-10 w-10 text-primary" />,
-      role: "creditor" as UserRole,
-    },
+    }
   ];
 
-  const checa  = async () => {
-    const respuesta = await fetch('http://localhost:3000/ping')
-    console.log('respuesta',respuesta)
-    const result = await respuesta.text()
-    console.log('respuesta',result)
-    alert(result)
+  const pingServer  = async () => {
+    const resp = await fetch('http://localhost:3000/ping')
+    const result = await resp.text()
   };
-  
+  useEffect(()=>{
+    pingServer()    // awake server if slept before getting into business
+  },[])
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -72,7 +66,7 @@ const Index: React.FC = () => {
         <section className="py-20 px-4">
           <div className="container-content">
             <div className="text-center mb-16 max-w-3xl mx-auto">
-              <Badge className="mb-4 py-1 px-3 bg-blue-100 text-blue-800 border-blue-200" onClick={checa}>
+              <Badge className="mb-4 py-1 px-3 bg-blue-100 text-blue-800 border-blue-200">
                 Demo
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -92,7 +86,7 @@ const Index: React.FC = () => {
                   {t("common.newToSystem")}
                 </h2>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                   {roleCards.map((card) => (
                     <Card key={card.role} className="card-transition glass-card">
                       <CardHeader>
@@ -130,7 +124,7 @@ const Index: React.FC = () => {
                       ? t("roles.solicitantCompany.title") 
                       : user?.role === "solicitant" 
                         ? t("roles.solicitant.title") 
-                        : t("roles.creditor.title")}
+                        : ""}
                   </p>
                   <Button onClick={() => navigate("/dashboard")}>
                     {t("header.dashboard")}

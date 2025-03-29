@@ -18,7 +18,9 @@ export const es = {
     user_added: "Usuario agregado",
     noEmployees:"No hay Empleados",
     ZKProof_ok:"Prueba ZK Válida",
-    ZKProof_error:"¡Prueba ZK inválida!"
+    ZKProof_error:"¡Prueba ZK inválida!",
+    proofCopied:"Datos de Prueba copiados al Portapapeles",
+    notTestnet:"No hay conexión a Testenet Sepolia"
   },
   header: {
     home: "Inicio",
@@ -34,7 +36,7 @@ export const es = {
   home: {
     title: "Demo de Aprobación de Crédito ZK Proof",
     subtitle: "Una demostración de pruebas de conocimiento cero para aprobación de crédito",
-    description: "Este es un sitio de demostración para mostrar un generador de pruebas ZK para obtener un crédito. La prueba está codificada para que el empleado tenga que ganar MXN 20,000 o más para obtener un crédito.",
+    description: "Este es un sitio de demostración para mostrar un generador de pruebas ZK para obtener un crédito. La prueba está codificada para que el empleado tenga que ganar MXN 28,000 o más para obtener un crédito.",
   },
   roles: {
     solicitantCompany: {
@@ -70,8 +72,11 @@ export const es = {
   solicitant: {
     proofsList: "Tus Pruebas ZK",
     requestCredit: "Verificar Prueba",
-    requestDescription: "Esto subirá tu solicitud con la prueba ZK a la blockchain",
+    requestDescription: "Se validará tu prueba ZK en un contrato en la Blockchain (Sepolia)",
     proofName: "Datos de Prueba",
+    proofValidationTitle: "Validación de Prueba",
+    ProofCreatedSuccessfully:"Prueba ZK creada existosamente"
+   
   },
   creditor: {
     requestsList: "Solicitudes de Crédito",
