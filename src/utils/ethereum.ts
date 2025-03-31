@@ -2,7 +2,7 @@ import { ethers } from "ethers"
 import GROTH16_VERIFIER_ABI from "./Groth16VerifierABI.json"
 
 // Verifier Contract deployed to SEPOLIA
-const VERIFIER_CONTRACT_ADDRESS='0xAd0fB84F188DF7Bb7A889FFC734739f34bBA2a14'
+const VERIFIER_CONTRACT_ADDRESS=import.meta.env.VITE_CONTRACT_ADDRESS
 
  const ChainId= "0xaa36a7"
  const ChainName= "Sepolia"
@@ -102,7 +102,7 @@ export const verifyProof = async (proof:string[]): Promise<{status: boolean, msg
       let isValid: Boolean
       if (typeof window === "undefined" || !window.ethereum) {
         //no wallet, verify through server
-        const result = await fetch("http://localhost:3000/verifyproof", {
+        const result = await fetch(`${import.meta.env.VITE_SERVER_ADDRESS}/verifyproof`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

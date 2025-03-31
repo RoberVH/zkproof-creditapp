@@ -51,7 +51,7 @@ const Index: React.FC = () => {
   ];
 
   const pingServer  = async () => {
-    const resp = await fetch('http://localhost:3000/ping')
+    const resp = await fetch(`${import.meta.env.VITE_SERVER_ADDRESS}/ping`)
     const result = await resp.text()
   };
   useEffect(()=>{

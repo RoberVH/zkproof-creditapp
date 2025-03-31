@@ -23,7 +23,7 @@ const createZKProof = async (inputData: InputDataProps): Promise<returnValuesZKP
     const { wageAmount, salt, rfc } = inputData;
 
     try {
-        const response = await fetch('http://localhost:3000/createzkproof', {
+        const response = await fetch(`${import.meta.env.VITE_SERVER_ADDRESS}/createzkproof`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

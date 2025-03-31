@@ -97,6 +97,21 @@ const Dashboard: React.FC = () => {
     setSelectedEmployee(e)
   }
 
+  const handleChangeProof = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newProofValue = e.target.value;
+  
+    setAvailableProofs((prevProofs) => {
+      const updatedProofs = [...prevProofs]; // Clonar el array para no mutar el estado directamente
+      if (selectedProof && selectedProof > 0 && selectedProof <= prevProofs.length) {
+        // Actualizar solo el campo 'proof' del elemento seleccionado
+        updatedProofs[selectedProof - 1] = {
+          ...updatedProofs[selectedProof - 1],
+          proof: newProofValue,
+        };
+      }
+      return updatedProofs;
+    });
+  };
 
   
   const renderSolicitantCompanyDashboard = () => (
@@ -276,6 +291,7 @@ const Dashboard: React.FC = () => {
                   <textarea 
                     name='dataproof' 
                     key={selectedProof}
+                    onChange={handleChangeProof}
                     className="p-1 cursor-pointer" 
                     onClick={()=> copyProofData(JSON.stringify(availableProofs[selectedProof-1].proof))} 
                     title={'Proof Data'}  
