@@ -8,6 +8,7 @@ This demo uses Vite/ react / typescript / Tailwind. It was originally scaffolded
 Is server is deployed to https://server-zkproof-creditapp.onrender.com
 it connects to a Sepolia Contract at 0xAd0fB84F188DF7Bb7A889FFC734739f34bBA2a14 to validate ZK Proofs
 
+### Demo site deployed at [Netlity](https://zkproof-demo-app.netlify.app)
 
 ### Basic installation of  Frameworks for  app from scratch
 
