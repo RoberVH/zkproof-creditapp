@@ -189,7 +189,7 @@ const Dashboard: React.FC = () => {
                     disabled={!rfc || !wageAmount || !salt}
                     className="flex-1"
                   >
-                  {  isWaiting ? t("common.waitingServer") : t("company.createProof")
+                  {  isWaiting ? t("common.waitingServerAnswer") : t("company.createProof")
                   }                  
                   </Button>
                   <Button 
@@ -316,7 +316,7 @@ const Dashboard: React.FC = () => {
           </CardContent>
           <CardFooter className="flex justify-end">
             <Button onClick={handleVerify}>
-            {  isWaiting ? t("common.waitingServer") : t("solicitant.requestCredit")
+            {  isWaiting ? t("common.waitingServerAnswer") : t("solicitant.requestCredit")
             }   
               
             </Button>
