@@ -98,6 +98,7 @@ export const verifyProof = async (proof:string[]): Promise<{status: boolean, msg
     callData[3][1],
     callData[3][2]
   ]
+  
     try {
       let isValid: Boolean
       if (typeof window === "undefined" || !window.ethereum) {

@@ -20,7 +20,9 @@ export const en = {
     ZKProof_ok:"Valid ZK Proof",
     ZKProof_error:"Invalid ZK Proof!",
     proofCopied:"Proof Data copied to Clipboard",
-    notTestnet:"No Testenet Sepolia connection"
+    notTestnet:"No Testenet Sepolia connection",
+    noServer:"No Server, reload page to wake it up",
+    waitingServer:"Waiting Server..."
   },
   header: {
     home: "Home",

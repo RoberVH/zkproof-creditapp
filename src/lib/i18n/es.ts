@@ -20,7 +20,9 @@ export const es = {
     ZKProof_ok:"Prueba ZK Válida",
     ZKProof_error:"¡Prueba ZK inválida!",
     proofCopied:"Datos de Prueba copiados al Portapapeles",
-    notTestnet:"No hay conexión a Testenet Sepolia"
+    notTestnet:"No hay conexión a Testenet Sepolia",
+    noServer:"No hay Servidor, recargue la pagina para despertarlo",
+    waitingServer:"Esperando al Servidor..."
   },
   header: {
     home: "Inicio",

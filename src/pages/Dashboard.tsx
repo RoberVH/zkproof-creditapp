@@ -19,7 +19,7 @@ import {  userByRole } from "@/lib/existingEntityonStorage";
 import { createZKProof } from "@/components/zkproofs/createZKproof";
 import { storeProof } from "@/lib/writeProofStorage";
 import { convertUnixDate, copyClipboard, getEmployeeProofs } from "@/lib/utils";
-import { StoredProofRecord } from "@/lib/app-types";
+import { StoredProofRecord, ZKProofToStore } from "@/lib/app-types";
 import { verifyProof } from "@/utils/ethereum";
 
 
@@ -35,6 +35,10 @@ const Dashboard: React.FC = () => {
   const [rfc, setRFC] = useState<string>("");
   const [wageAmount, setWageAmount] = useState("");
   const [salt, setSalt] = useState("");
+  const [isWaiting, setIsWaiting] = useState<boolean>(false);
+  
+
+  
 
   // Get all storage users - Applicants available at load time
   React.useEffect(() => {
@@ -70,6 +74,7 @@ const Dashboard: React.FC = () => {
   const handleCreateProof = async () => {
     // Implement proof creation logic
     try {
+      setIsWaiting(true)
       const result = await createZKProof({ wageAmount, salt, rfc})
       if (!result.status) throw new Error(result.msg)
       // store it on browser
@@ -82,12 +87,17 @@ const Dashboard: React.FC = () => {
     } catch (error) {
       console.error('Error creating zkpProof from server:', error);
       toast.error(error.message);
-    }
+    } finally {
+        setIsWaiting(false)
+      }
+    
   };
 
   
   const handleVerify = async () => {
+    setIsWaiting(true)
     const result = await verifyProof(availableProofs[selectedProof-1].proof)
+    setIsWaiting(false)
     if (result.status ) toast.success(t(result.msg))
         else toast.error(t(result.msg))
   };
@@ -98,7 +108,7 @@ const Dashboard: React.FC = () => {
   }
 
   const handleChangeProof = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newProofValue = e.target.value;
+    const newProofValue = e.target.value as unknown as ZKProofToStore;
   
     setAvailableProofs((prevProofs) => {
       const updatedProofs = [...prevProofs]; // Clonar el array para no mutar el estado directamente
@@ -179,7 +189,8 @@ const Dashboard: React.FC = () => {
                     disabled={!rfc || !wageAmount || !salt}
                     className="flex-1"
                   >
-                    {t("company.createProof")}
+                  {  isWaiting ? t("common.waitingServer") : t("company.createProof")
+                  }                  
                   </Button>
                   <Button 
                     variant="outline" 
@@ -305,7 +316,9 @@ const Dashboard: React.FC = () => {
           </CardContent>
           <CardFooter className="flex justify-end">
             <Button onClick={handleVerify}>
-              {t("solicitant.requestCredit")}
+            {  isWaiting ? t("common.waitingServer") : t("solicitant.requestCredit")
+            }   
+              
             </Button>
           </CardFooter>
         </Card>

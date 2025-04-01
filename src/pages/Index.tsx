@@ -12,6 +12,7 @@ import SignUpForm from "@/components/Auth/SignUpForm";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import { toast } from "sonner";
+import Spinner from "@/components/Layout/Spinner";
 
 const Index: React.FC = () => {
   const { isAuthenticated, user } = useContext(AuthContext);
@@ -19,6 +20,7 @@ const Index: React.FC = () => {
   const navigate = useNavigate();
   const [signUpOpen, setSignUpOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<UserRole>(null);
+  const [isWaiting, setIsWaiting] = useState<boolean>(false);
 
   const handleSignUpClick = (role: UserRole) => {
     setSelectedRole(role);
@@ -51,8 +53,16 @@ const Index: React.FC = () => {
   ];
 
   const pingServer  = async () => {
+    setIsWaiting(true)
     const resp = await fetch(`${import.meta.env.VITE_SERVER_ADDRESS}/ping`)
     const result = await resp.text()
+    console.log(result)
+    console.log(typeof result)
+    console.log(result.length)
+    if (!result.includes('pong')) {
+      toast.error(t("common.noServer"))
+    }
+    setIsWaiting(false)
   };
   useEffect(()=>{
     pingServer()    // awake server if slept before getting into business
@@ -63,6 +73,7 @@ const Index: React.FC = () => {
       <Header />
       
       <main className="flex-grow">
+        {isWaiting && <Spinner msj={t('common.waitingServer')}/>}
         <section className="py-20 px-4">
           <div className="container-content">
             <div className="text-center mb-16 max-w-3xl mx-auto">
