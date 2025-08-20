@@ -22,7 +22,7 @@ export const en = {
     proofCopied:"Proof Data copied to Clipboard",
     notTestnet:"No Testenet Sepolia connection",
     noServer:"No Server, reload page to wake it up",
-    waitingServer:"Waiting Server (can take 60 secs to wake it)...",
+    waitingServer:"Waiting for the free-tier Server - may take up to 60 seconds to wake up!...",
     waitingServerAnswer:"Waiting Server..."
   },
   header: {

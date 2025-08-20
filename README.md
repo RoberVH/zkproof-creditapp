@@ -2,14 +2,17 @@
 
 **Date**: March 18, 2025  
 **Author**: Roberto VH [rovicher.eth](https://x.com/RoberVH)  
-**Description**: Demo app for a ZKProof based validation of an employee having a wage greater that a Creditor requested minimum limit without disclosing real salary  
-**Notes**: 
-This demo uses Vite/ react / typescript / Tailwind. It was originally scaffolded with lovable.dev
-Its server is deployed to https://server-zkproof-creditapp.onrender.com
-it connects to a Sepolia Contract at **0xAd0fB84F188DF7Bb7A889FFC734739f34bBA2a14** to validate ZK Proofs
+**Description**:  
+Demo app for a ZKProof based validation of an employee having a wage greater that a Creditor requested minimum limit without disclosing real salary  
 
-### Server Client  site deployed at [render](https://server-zkproof-creditapp.onrender.com )
-### Demo  Server site deployed at [Netlity](https://zkproof-demo-app.netlify.app)
+**Notes**: 
+
+This demo uses Vite/ react / typescript / Tailwind. UI It was originally scaffolded with lovable.dev    
+It connects to a Express server backend [Github](https://github.com/RoberVH/server-zkproof-creditapp-)   
+it connects to a Sepolia Contract at **0xAd0fB84F188DF7Bb7A889FFC734739f34bBA2a14** to validate ZK Proofs   
+
+#### Server Client  site deployed at [render](https://server-zkproof-creditapp.onrender.com )
+#### Demo  Server site deployed at [Netlity](https://zkproof-demo-app.netlify.app)
 
 ### Basic installation of  Frameworks for  app from scratch
 

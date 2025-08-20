@@ -22,7 +22,7 @@ export const es = {
     proofCopied:"Datos de Prueba copiados al Portapapeles",
     notTestnet:"No hay conexión a Testenet Sepolia",
     noServer:"No hay Servidor, recargue la pagina para despertarlo",
-    waitingServer:"Esperando al Servidor (puede tardar 60 segundos despertarlo)...",
+    waitingServer:"Esperando al provedor del Servidor (¡ puede tardar 60 segundos despertarlo !)...",
     waitingServerAnswer:"Esperando al Servidor..."
   },
   header: {
