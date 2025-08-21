@@ -1,41 +1,51 @@
-
-import React, { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Shield, Briefcase, User, CreditCard } from "lucide-react";
-import { AuthContext, UserRole } from "@/context/AuthContext";
-import { useTranslation } from "@/hooks/useTranslation";
-import SignUpForm from "@/components/Auth/SignUpForm";
-import Header from "@/components/Layout/Header";
-import Footer from "@/components/Layout/Footer";
-import { toast } from "sonner";
-import Spinner from "@/components/Layout/Spinner";
+import React, { useState, useContext, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
+import { Badge } from "@/components/ui/badge"
+import { Shield, Briefcase, User, CreditCard } from "lucide-react"
+import { AuthContext, UserRole } from "@/context/AuthContext"
+import { useTranslation } from "@/hooks/useTranslation"
+import SignUpForm from "@/components/Auth/SignUpForm"
+import Header from "@/components/Layout/Header"
+import Footer from "@/components/Layout/Footer"
+import { toast } from "sonner"
+import Spinner from "@/components/Layout/Spinner"
 
 const Index: React.FC = () => {
-  const { isAuthenticated, user } = useContext(AuthContext);
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [signUpOpen, setSignUpOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<UserRole>(null);
-  const [isWaiting, setIsWaiting] = useState<boolean>(false);
+  const { isAuthenticated, user } = useContext(AuthContext)
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const [signUpOpen, setSignUpOpen] = useState(false)
+  const [selectedRole, setSelectedRole] = useState<UserRole>(null)
+  const [isWaiting, setIsWaiting] = useState<boolean>(false)
 
   const handleSignUpClick = (role: UserRole) => {
-    setSelectedRole(role);
-    setSignUpOpen(true);
-  };
+    setSelectedRole(role)
+    setSignUpOpen(true)
+  }
 
-  const handleSignUp = (result: {status:boolean, msg:string}) => {
-    setSignUpOpen(false);
-    if (result.status)
-         toast.success(t(`common.${result.msg}`))
-        else 
-        toast.error(t(`common.${result.msg}`))
+  const handleSignUp = (result: { status: boolean; msg: string }) => {
+    setSignUpOpen(false)
+    if (result.status) toast.success(t(`common.${result.msg}`))
+    else toast.error(t(`common.${result.msg}`))
 
-    navigate("/dashboard");
-  };
+    navigate("/dashboard")
+  }
 
   const roleCards = [
     {
@@ -49,46 +59,46 @@ const Index: React.FC = () => {
       description: t("roles.solicitant.description"),
       icon: <User className="h-10 w-10 text-primary" />,
       role: "solicitant" as UserRole,
-    }
-  ];
+    },
+  ]
 
-  const pingServer  = async () => {
+  const pingServer = async () => {
     setIsWaiting(true)
     const resp = await fetch(`${import.meta.env.VITE_SERVER_ADDRESS}/ping`)
     const result = await resp.text()
     console.log(result)
     console.log(typeof result)
     console.log(result.length)
-    if (!result.includes('pong')) {
+    if (!result.includes("pong")) {
       toast.error(t("common.noServer"))
     }
     setIsWaiting(false)
-  };
-  useEffect(()=>{
-    pingServer()    // awake server if slept before getting into business
-  },[])
+  }
+  useEffect(() => {
+    pingServer() // awake server if slept before getting into business
+  }, [])
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      
+
       <main className="flex-grow">
-        {isWaiting && <Spinner msj={t('common.waitingServer')}/>}
+        {isWaiting && <Spinner msj={t("common.waitingServer")} />}
         <section className="py-20 px-4">
           <div className="container-content">
             <div className="text-center mb-16 max-w-3xl mx-auto">
-              <Badge className="mb-4 py-1 px-3 bg-blue-100 text-blue-800 border-blue-200">
-                Demo
-              </Badge>
               <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 {t("home.title")}
               </h1>
-              <p className="text-lg text-gray-600 mb-8">
-                {t("home.subtitle")}
-              </p>
-              <p className="text-gray-700">
-                {t("home.description")}
-              </p>
+              <p className="text-lg text-gray-600 mb-8">{t("home.subtitle")}</p>
+              <a
+                href="https://vimeo.com/1111841831?share=copy#t=0"
+                target="_blank"
+                className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer "
+              >
+                {t("home.watch_video")}
+              </a>
+              <p className="text-gray-700 pt-4">{t("home.description")}</p>
             </div>
 
             {!isAuthenticated && (
@@ -96,21 +106,26 @@ const Index: React.FC = () => {
                 <h2 className="text-2xl font-semibold text-center mb-10">
                   {t("common.newToSystem")}
                 </h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                   {roleCards.map((card) => (
-                    <Card key={card.role} className="card-transition glass-card">
+                    <Card
+                      key={card.role}
+                      className="card-transition glass-card"
+                    >
                       <CardHeader>
                         <div className="flex justify-center mb-4">
                           {card.icon}
                         </div>
-                        <CardTitle className="text-center">{card.title}</CardTitle>
+                        <CardTitle className="text-center">
+                          {card.title}
+                        </CardTitle>
                         <CardDescription className="text-center">
                           {card.description}
                         </CardDescription>
                       </CardHeader>
                       <CardFooter className="flex justify-center pt-2 pb-6">
-                        <Button 
+                        <Button
                           onClick={() => handleSignUpClick(card.role)}
                           className="w-full"
                         >
@@ -131,11 +146,11 @@ const Index: React.FC = () => {
                     {t("common.welcome")}, {user?.username}!
                   </h2>
                   <p className="text-gray-600 mb-6">
-                    {user?.role === "solicitant-company" 
-                      ? t("roles.solicitantCompany.title") 
-                      : user?.role === "solicitant" 
-                        ? t("roles.solicitant.title") 
-                        : ""}
+                    {user?.role === "solicitant-company"
+                      ? t("roles.solicitantCompany.title")
+                      : user?.role === "solicitant"
+                      ? t("roles.solicitant.title")
+                      : ""}
                   </p>
                   <Button onClick={() => navigate("/dashboard")}>
                     {t("header.dashboard")}
@@ -146,9 +161,9 @@ const Index: React.FC = () => {
           </div>
         </section>
       </main>
-      
+
       <Footer />
-      
+
       <Dialog open={signUpOpen} onOpenChange={setSignUpOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -173,7 +188,7 @@ const Index: React.FC = () => {
         </DialogContent>
       </Dialog>
     </div>
-  );
-};
+  )
+}
 
-export default Index;
+export default Index

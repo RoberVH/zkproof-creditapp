@@ -370,7 +370,7 @@ const Dashboard: React.FC = () => {
                       {t("auth.walletConnected")}
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="ml-2 bg-yellow-50 text-yellow-700 border-yellow-200 cursor-pointer" onClick={() => connectWallet()}>
+                    <Badge variant="outline" className="ml-2 bg-yellow-50 text-yellow-700 border-yellow-200 " onClick={() => connectWallet()}>
                       <AlertCircle className="h-3 w-3 mr-1" />
                       {t("auth.connectWallet")}
                     </Badge>

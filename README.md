@@ -14,6 +14,8 @@ it connects to a Sepolia Contract at **0xAd0fB84F188DF7Bb7A889FFC734739f34bBA2a1
 #### Server Client  site deployed at [render](https://server-zkproof-creditapp.onrender.com )
 #### Demo  Server site deployed at [Netlity](https://zkproof-demo-app.netlify.app)
 
+#### Demo video at [Vimeo](https://vimeo.com/1111841831?share=copy#t=0)
+
 ### Basic installation of  Frameworks for  app from scratch
 
 ```

@@ -40,6 +40,7 @@ export const es = {
     title: "Demo de Aprobación de Crédito ZK Proof",
     subtitle: "Una demostración de pruebas de conocimiento cero para aprobación de crédito",
     description: "Este es un sitio de demostración para mostrar un generador de pruebas ZK para obtener un crédito. La prueba está codificada para que el empleado tenga que ganar MXN 28,000 o más para obtener un crédito.",
+    watch_video:"Ver Video con recorrido del Demo"
   },
   roles: {
     solicitantCompany: {

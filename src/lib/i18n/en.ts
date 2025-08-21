@@ -40,6 +40,7 @@ export const en = {
     title: "ZK Proof Credit Approval Demo",
     subtitle: "A demonstration of zero-knowledge proofs for credit approval",
     description: "This is a demo site to showcase a ZK proof generator to get a credit. The proof is hardcoded so to get a credit the employee has to make MXN 28,000 or higher.",
+    watch_video:"Watch Video Demo walkthrough"
   },
   roles: {
     solicitantCompany: {
